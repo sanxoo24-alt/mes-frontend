@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 
-const API = 'http://10.10.10.15:4000';
+const API = 'https://mes-backend-production-3a22.up.railway.app';
 const fmt = (v) => v ? String(v).slice(0,10) : '-';
 
 export default function SalesRegisterPage() {

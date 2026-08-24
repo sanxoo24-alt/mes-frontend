@@ -14,7 +14,7 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
     try {
-  const res  = await fetch('http://10.10.10.15:4000/api/auth/login', {
+  const res  = await fetch('https://mes-backend-production-3a22.up.railway.app/api/auth/login', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ emp_id: empNo, password: pw }),  // employee_number → emp_id

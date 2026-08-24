@@ -13,7 +13,7 @@ export default function SearchPage() {
     if (!sn.trim()) return;
     setLoading(true); setError(''); setData(null); setSelectedId(null);
     try {
-      const res  = await fetch(`http://10.10.10.15:4000/api/search?sn=${sn.trim()}`);
+      const res  = await fetch(`https://mes-backend-production-3a22.up.railway.app/api/search?sn=${sn.trim()}`);
       const json = await res.json();
       if (!json.success) { setError(json.error || '검색 실패'); return; }
       if (!json.orders?.length) { setError('검색 결과가 없습니다.'); return; }

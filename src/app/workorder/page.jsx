@@ -18,7 +18,7 @@ export default function WorkOrderPage() {
   const [result,       setResult]       = useState(null);
 
   useEffect(() => {
-    fetch('http://10.10.10.15:4000/api/workorder/products')
+    fetch('https://mes-backend-production-3a22.up.railway.app/api/workorder/products')
       .then(r => r.json())
       .then(data => setProducts(data.list || []));
   }, []);
@@ -28,7 +28,7 @@ export default function WorkOrderPage() {
     setTypesLoading(true);
     setForm(f => ({ ...f, type: '' }));
     setProcesses([]);
-    fetch(`http://10.10.10.15:4000/api/workorder/types/${form.product_id}`)
+    fetch(`https://mes-backend-production-3a22.up.railway.app/api/workorder/types/${form.product_id}`)
       .then(r => r.json())
       .then(data => setTypes(data.list || []))
       .finally(() => setTypesLoading(false));
@@ -36,7 +36,7 @@ export default function WorkOrderPage() {
 
   useEffect(() => {
     if (!form.product_id || !form.type) { setProcesses([]); return; }
-    fetch(`http://10.10.10.15:4000/api/workorder/processes/${form.product_id}?type=${form.type}`)
+    fetch(`https://mes-backend-production-3a22.up.railway.app/api/workorder/processes/${form.product_id}?type=${form.type}`)
       .then(r => r.json())
       .then(data => setProcesses(data.list || []));
   }, [form.product_id, form.type]);
@@ -55,7 +55,7 @@ export default function WorkOrderPage() {
     }
     setLoading(true);
     try {
-      const res = await fetch('http://10.10.10.15:4000/api/workorder', {
+      const res = await fetch('https://mes-backend-production-3a22.up.railway.app/api/workorder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

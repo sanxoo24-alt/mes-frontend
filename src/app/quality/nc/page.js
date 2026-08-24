@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 
-const API = 'http://10.10.10.15:4000';
+const API = 'https://mes-backend-production-3a22.up.railway.app';
 
 const JUDGMENTS = ['현장조치', '재작업', '부적합', '폐기', '합격'];
 

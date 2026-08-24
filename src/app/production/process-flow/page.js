@@ -16,14 +16,14 @@ export default function ProcessFlowPage() {
   const [dirty,        setDirty]        = useState(false);
 
   useEffect(() => {
-    fetch('http://10.10.10.15:4000/api/process-flow/products')
+    fetch('https://mes-backend-production-3a22.up.railway.app/api/process-flow/products')
       .then(r => r.json()).then(d => setProducts(d.list || []));
-    fetch('http://10.10.10.15:4000/api/process-flow/all-processes')
+    fetch('https://mes-backend-production-3a22.up.railway.app/api/process-flow/all-processes')
       .then(r => r.json()).then(d => setAllProcesses(d.list || []));
   }, []);
 
   const loadFlows = async (prod) => {
-    const res  = await fetch(`http://10.10.10.15:4000/api/process-flow/${prod.id}`);
+    const res  = await fetch(`https://mes-backend-production-3a22.up.railway.app/api/process-flow/${prod.id}`);
     const json = await res.json();
     if (json.success) { setFlows(json.list); setSelectedFlow(null); setEditSteps([]); setDirty(false); }
   };
@@ -39,7 +39,7 @@ export default function ProcessFlowPage() {
 
   const handleAddType = async () => {
     if (!newType.trim()) return;
-    const res  = await fetch('http://10.10.10.15:4000/api/process-flow/type', {
+    const res  = await fetch('https://mes-backend-production-3a22.up.railway.app/api/process-flow/type', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ product_id: selectedProd.id, type_name: newType.trim() }),
     });
@@ -51,7 +51,7 @@ export default function ProcessFlowPage() {
 
   const handleDeleteType = async (flow) => {
     if (!confirm(`"${flow.type_name}" 타입과 모든 공정 순서를 삭제하시겠습니까?`)) return;
-    await fetch(`http://10.10.10.15:4000/api/process-flow/type/${flow.id}`, { method: 'DELETE' });
+    await fetch(`https://mes-backend-production-3a22.up.railway.app/api/process-flow/type/${flow.id}`, { method: 'DELETE' });
     if (selectedFlow?.id === flow.id) { setSelectedFlow(null); setEditSteps([]); }
     loadFlows(selectedProd);
   };
@@ -89,7 +89,7 @@ export default function ProcessFlowPage() {
       const finalSteps = [];
       for (const s of editSteps) {
         if (s.isNew) {
-          const res  = await fetch(`http://10.10.10.15:4000/api/process-flow/${selectedFlow.id}/steps`, {
+          const res  = await fetch(`https://mes-backend-production-3a22.up.railway.app/api/process-flow/${selectedFlow.id}/steps`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ process_id: s.process_id, step_type: s.step_type, tat: s.tat !== '' ? Number(s.tat) : null }),
           });
@@ -100,12 +100,12 @@ export default function ProcessFlowPage() {
           finalSteps.push({ step_id: s.step_id, process_id: s.process_id, sequence_order: s.sequence_order, step_type: s.step_type, tat: s.tat !== '' ? Number(s.tat) : null });
         }
       }
-      await fetch(`http://10.10.10.15:4000/api/process-flow/${selectedFlow.id}/reorder`, {
+      await fetch(`https://mes-backend-production-3a22.up.railway.app/api/process-flow/${selectedFlow.id}/reorder`, {
         method: 'PUT', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ steps: finalSteps }),
       });
       setDirty(false);
-      const res  = await fetch(`http://10.10.10.15:4000/api/process-flow/${selectedProd.id}`);
+      const res  = await fetch(`https://mes-backend-production-3a22.up.railway.app/api/process-flow/${selectedProd.id}`);
       const json = await res.json();
       if (json.success) {
         setFlows(json.list);
@@ -119,7 +119,7 @@ export default function ProcessFlowPage() {
 
   const removeStep = async (idx) => {
     const step = editSteps[idx];
-    if (!step.isNew) { await fetch(`http://10.10.10.15:4000/api/process-flow/step/${step.step_id}`, { method: 'DELETE' }); }
+    if (!step.isNew) { await fetch(`https://mes-backend-production-3a22.up.railway.app/api/process-flow/step/${step.step_id}`, { method: 'DELETE' }); }
     handleRemoveStep(idx);
   };
 

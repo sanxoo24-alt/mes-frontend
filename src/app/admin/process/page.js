@@ -26,7 +26,7 @@ export default function ProcessPage() {
   const fetchProcesses = async () => {
     setLoading(true);
     try {
-      const res  = await fetch('http://10.10.10.15:4000/api/processes');
+      const res  = await fetch('https://mes-backend-production-3a22.up.railway.app/api/processes');
       const data = await res.json();
       setProcesses(data.list || []);
     } catch (e) { console.error(e); }
@@ -70,7 +70,7 @@ export default function ProcessPage() {
     setSaving(true);
     setError('');
     try {
-      const url    = editTarget ? `http://10.10.10.15:4000/api/processes/${editTarget.id}` : 'http://10.10.10.15:4000/api/processes';
+      const url    = editTarget ? `https://mes-backend-production-3a22.up.railway.app/api/processes/${editTarget.id}` : 'https://mes-backend-production-3a22.up.railway.app/api/processes';
       const method = editTarget ? 'PUT' : 'POST';
       const res    = await fetch(url, {
         method,
@@ -89,7 +89,7 @@ export default function ProcessPage() {
   };
 
   const toggleActive = async (p) => {
-    await fetch(`http://10.10.10.15:4000/api/processes/${p.id}`, {
+    await fetch(`https://mes-backend-production-3a22.up.railway.app/api/processes/${p.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...p, is_active: p.is_active ? 0 : 1 }),

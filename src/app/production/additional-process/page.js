@@ -17,7 +17,7 @@ export default function AdditionalProcessPage() {
 
   const load = async (kw = '') => {
     setLoading(true);
-    const res  = await fetch(`http://10.10.10.15:4000/api/additional-process${kw ? `?keyword=${kw}` : ''}`);
+    const res  = await fetch(`https://mes-backend-production-3a22.up.railway.app/api/additional-process${kw ? `?keyword=${kw}` : ''}`);
     const json = await res.json();
     if (json.success) setList(json.list);
     setLoading(false);
@@ -25,13 +25,13 @@ export default function AdditionalProcessPage() {
 
   useEffect(() => {
     load();
-    fetch('http://10.10.10.15:4000/api/process-flow/all-processes')
+    fetch('https://mes-backend-production-3a22.up.railway.app/api/process-flow/all-processes')
       .then(r => r.json()).then(d => setAllProcesses(d.list || []));
   }, []);
 
   // ?úÌîåÎ¶??ÅÏÑ∏ Î°úÎìú (?∏Ïßë ??
   const loadDetail = async (template_name) => {
-    const res  = await fetch(`http://10.10.10.15:4000/api/additional-process/${encodeURIComponent(template_name)}`);
+    const res  = await fetch(`https://mes-backend-production-3a22.up.railway.app/api/additional-process/${encodeURIComponent(template_name)}`);
     const json = await res.json();
     return json.list || [];
   };
@@ -58,7 +58,7 @@ export default function AdditionalProcessPage() {
 
   const handleDelete = async (template_name) => {
     if (!confirm(`"${template_name}" ?úÌîåÎ¶øÏùÑ ??†ú?òÏãúÍ≤†Ïäµ?àÍπå?`)) return;
-    await fetch(`http://10.10.10.15:4000/api/additional-process/${encodeURIComponent(template_name)}`, {
+    await fetch(`https://mes-backend-production-3a22.up.railway.app/api/additional-process/${encodeURIComponent(template_name)}`, {
       method: 'DELETE'
     });
     load(keyword);
@@ -111,13 +111,13 @@ export default function AdditionalProcessPage() {
 
       let res;
       if (modal.mode === 'create') {
-        res = await fetch('http://10.10.10.15:4000/api/additional-process', {
+        res = await fetch('https://mes-backend-production-3a22.up.railway.app/api/additional-process', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
         });
       } else {
-        res = await fetch(`http://10.10.10.15:4000/api/additional-process/${encodeURIComponent(modal.template_name)}`, {
+        res = await fetch(`https://mes-backend-production-3a22.up.railway.app/api/additional-process/${encodeURIComponent(modal.template_name)}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...body, new_name: tplName.trim() }),

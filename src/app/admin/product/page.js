@@ -16,7 +16,7 @@ export default function ProductPage() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const res  = await fetch('http://10.10.10.15:4000/api/products');
+      const res  = await fetch('https://mes-backend-production-3a22.up.railway.app/api/products');
       const data = await res.json();
       setProducts(data.list || []);
     } catch (e) { console.error(e); }
@@ -54,7 +54,7 @@ export default function ProductPage() {
     setSaving(true);
     setError('');
     try {
-      const url    = editTarget ? `http://10.10.10.15:4000/api/products/${editTarget.id}` : 'http://10.10.10.15:4000/api/products';
+      const url    = editTarget ? `https://mes-backend-production-3a22.up.railway.app/api/products/${editTarget.id}` : 'https://mes-backend-production-3a22.up.railway.app/api/products';
       const method = editTarget ? 'PUT' : 'POST';
       const res    = await fetch(url, {
         method,
@@ -73,7 +73,7 @@ export default function ProductPage() {
   };
 
   const toggleActive = async (p) => {
-    await fetch(`http://10.10.10.15:4000/api/products/${p.id}`, {
+    await fetch(`https://mes-backend-production-3a22.up.railway.app/api/products/${p.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...p, is_active: p.is_active ? 0 : 1 }),

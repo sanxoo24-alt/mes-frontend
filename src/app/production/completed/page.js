@@ -33,7 +33,7 @@ export default function CompletedPage() {
       if (keyword) params.set('keyword', keyword);
       if (from)    params.set('from', from);
       if (to)      params.set('to', to);
-      const res  = await fetch(`http://10.10.10.15:4000/api/production/completed?${params}`);
+      const res  = await fetch(`https://mes-backend-production-3a22.up.railway.app/api/production/completed?${params}`);
       const json = await res.json();
       if (!json.success) throw new Error(json.error);
       setList(json.list);

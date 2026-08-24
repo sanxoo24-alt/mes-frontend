@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 
-const API = 'http://10.10.10.15:4000';
+const API = 'https://mes-backend-production-3a22.up.railway.app';
 
 const STATUS_STYLE = {
   '완료':   { text: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200' },

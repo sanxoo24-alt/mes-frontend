@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 
-const API = 'http://10.10.10.15:4000';
+const API = 'https://mes-backend-production-3a22.up.railway.app';
 
 const DAYS = ['일','월','화','수','목','금','토'];
 

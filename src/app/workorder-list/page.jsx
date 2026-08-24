@@ -43,7 +43,7 @@ function JudgmentModal({ rework, onClose, onSaved }) {
   const handleSubmit = async () => {
     if (!form.judgment) { alert('판정을 선택해주세요.'); return; }
     setLoading(true);
-    const res  = await fetch(`http://10.10.10.15:4000/api/rework/${rework.id}`, {
+    const res  = await fetch(`https://mes-backend-production-3a22.up.railway.app/api/rework/${rework.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
@@ -118,7 +118,7 @@ function ReworkHistoryModal({ order, onClose }) {
 
   const fetchHistory = async () => {
     setLoading(true);
-    const res  = await fetch(`http://10.10.10.15:4000/api/rework/${order.serial_number}`);
+    const res  = await fetch(`https://mes-backend-production-3a22.up.railway.app/api/rework/${order.serial_number}`);
     const data = await res.json();
     setReworks(data.reworks   || []);
     setDeadlines(data.deadlines || []);
@@ -220,7 +220,7 @@ function ReworkModal({ order, onClose, onSaved }) {
   const handleSubmit = async () => {
     if (!form.reason_code) { alert('불량코드는 필수입니다.'); return; }
     setLoading(true);
-    const res  = await fetch('http://10.10.10.15:4000/api/rework', {
+    const res  = await fetch('https://mes-backend-production-3a22.up.railway.app/api/rework', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ serial_number: order.serial_number, ...form }),
@@ -344,7 +344,7 @@ export default function WorkOrderListPage() {
   const [historyTarget, setHistoryTarget] = useState(null);
 
   const fetchOrders = () => {
-    fetch('http://10.10.10.15:4000/api/workorder')
+    fetch('https://mes-backend-production-3a22.up.railway.app/api/workorder')
       .then(r => r.json())
       .then(data => setOrders(data.list || []));
   };
@@ -355,7 +355,7 @@ export default function WorkOrderListPage() {
     if (selected === header_id) { setSelected(null); setDetails([]); return; }
     setSelected(header_id);
     setLoading(true);
-    const res  = await fetch(`http://10.10.10.15:4000/api/workorder/detail/${header_id}`);
+    const res  = await fetch(`https://mes-backend-production-3a22.up.railway.app/api/workorder/detail/${header_id}`);
     const data = await res.json();
     setDetails(data.steps || []);
     setLoading(false);

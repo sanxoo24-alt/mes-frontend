@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 
-const API       = 'http://10.10.10.15:4000/api/workstation';
-const ISSUE_API = 'http://10.10.10.15:4000/api/issues';
+const API       = 'https://mes-backend-production-3a22.up.railway.app/api/workstation';
+const ISSUE_API = 'https://mes-backend-production-3a22.up.railway.app/api/issues';
 
 const DEPTS = [
   { id: 1, name: '가공파트' },
