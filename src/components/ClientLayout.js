@@ -15,7 +15,8 @@ export default function ClientLayout({ children }) {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (!token && !isLogin) { router.push('/login'); return; }
+    // [데모용] 로그인 없이 접근 허용 - 아래 줄 주석 처리
+    // if (!token && !isLogin) { router.push('/login'); return; }
     setUserName(localStorage.getItem('userName') || '');
     setDept(localStorage.getItem('userDept') || '');
     setReady(true);
