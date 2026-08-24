@@ -1,10 +1,10 @@
 'use client';
 import { useState, useEffect } from 'react';
 
-const STEP_TYPES = ['?�업', '검??, '?�수?�계', '?�주'];
+const STEP_TYPES = ['작업', '검사', '인수인계', '인주'];
 
 export default function AdditionalProcessPage() {
-  const [list,         setList]         = useState([]);  // ?�플�?목록
+  const [list,         setList]         = useState([]);  // 템플릿 목록
   const [keyword,      setKeyword]      = useState('');
   const [allProcesses, setAllProcesses] = useState([]);
   const [loading,      setLoading]      = useState(false);
@@ -12,7 +12,7 @@ export default function AdditionalProcessPage() {
   // 모달: null | { mode: 'create' | 'edit', template_name?, steps? }
   const [modal,   setModal]   = useState(null);
   const [tplName, setTplName] = useState('');
-  const [steps,   setSteps]   = useState([]);  // ?�집 중인 공정 목록
+  const [steps,   setSteps]   = useState([]);  // 편집 중인 공정 목록
   const [saving,  setSaving]  = useState(false);
 
   const load = async (kw = '') => {
@@ -29,7 +29,7 @@ export default function AdditionalProcessPage() {
       .then(r => r.json()).then(d => setAllProcesses(d.list || []));
   }, []);
 
-  // ?�플�??�세 로드 (?�집 ??
+  // 템플릿 상세 로드 (편집 시)
   const loadDetail = async (template_name) => {
     const res  = await fetch(`https://mes-backend-production-3a22.up.railway.app/api/additional-process/${encodeURIComponent(template_name)}`);
     const json = await res.json();
@@ -57,21 +57,21 @@ export default function AdditionalProcessPage() {
   };
 
   const handleDelete = async (template_name) => {
-    if (!confirm(`"${template_name}" ?�플릿을 ??��?�시겠습?�까?`)) return;
+    if (!confirm(`"${template_name}" 템플릿을 삭제하시겠습니까?`)) return;
     await fetch(`https://mes-backend-production-3a22.up.railway.app/api/additional-process/${encodeURIComponent(template_name)}`, {
       method: 'DELETE'
     });
     load(keyword);
   };
 
-  // 공정 추�?
+  // 공정 추가
   const addStep = (proc) => {
     setSteps(prev => [...prev, {
       process_id:      proc.id,
       process_name:    proc.process_name,
       process_code:    proc.process_code,
       department_name: proc.department_name,
-      step_type:       '?�업',
+      step_type:       '작업',
       sequence_order:  prev.length + 1,
     }]);
   };
@@ -94,10 +94,10 @@ export default function AdditionalProcessPage() {
     setSteps(prev => prev.map((s, i) => i === idx ? { ...s, step_type: val } : s));
   };
 
-  // ?�??
+  // 저장
   const handleSave = async () => {
-    if (!tplName.trim()) { alert('?�플릿명???�력?�세??'); return; }
-    if (steps.length === 0) { alert('공정??최소 1�?추�??�세??'); return; }
+    if (!tplName.trim()) { alert('템플릿명을 입력하세요.'); return; }
+    if (steps.length === 0) { alert('공정을 최소 1개 추가하세요.'); return; }
     setSaving(true);
     try {
       const body = {
@@ -128,7 +128,7 @@ export default function AdditionalProcessPage() {
       setModal(null);
       load(keyword);
     } catch (e) {
-      alert('?�류: ' + e.message);
+      alert('오류: ' + e.message);
     } finally {
       setSaving(false);
     }
@@ -136,9 +136,9 @@ export default function AdditionalProcessPage() {
 
   const fmtDate = (v) => v ? new Date(v).toLocaleDateString('ko-KR') : '-';
 
-  // 부?�별 그룹??
+  // 부서별 그룹핑
   const grouped = allProcesses.reduce((acc, p) => {
-    const d = p.department_name || '기�?';
+    const d = p.department_name || '기타';
     if (!acc[d]) acc[d] = [];
     acc[d].push(p);
     return acc;
@@ -147,57 +147,57 @@ export default function AdditionalProcessPage() {
   return (
     <div style={{ padding: '28px 32px', background: '#f8fafc', minHeight: '100vh' }}>
 
-      {/* ?�?��? */}
+      {/* 타이틀 */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 24 }}>
-        <span style={{ fontSize: 20 }}>?��</span>
-        <h1 style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>추�? ?�업 ?�서 관�?/h1>
+        <span style={{ fontSize: 20 }}>🔧</span>
+        <h1 style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>추가 작업 순서 관리</h1>
       </div>
 
-      {/* 검??*/}
+      {/* 검색 */}
       <div style={{
         background: '#fff', border: '1px solid #e5e7eb', borderRadius: 10,
         padding: '10px 16px', marginBottom: 16,
         display: 'flex', alignItems: 'center', gap: 10,
         boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
       }}>
-        <span style={{ color: '#9ca3af' }}>?��</span>
+        <span style={{ color: '#9ca3af' }}>🔍</span>
         <input
           value={keyword}
           onChange={e => setKeyword(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && load(keyword)}
-          placeholder="?�플릿명 검??.."
+          placeholder="템플릿명 검색..."
           style={{ flex: 1, border: 'none', outline: 'none', fontSize: 14, color: '#111827', background: 'transparent' }}
         />
         {keyword && (
           <button onClick={() => { setKeyword(''); load(''); }}
-            style={{ background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer' }}>??/button>
+            style={{ background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer' }}>✕</button>
         )}
       </div>
 
-      {/* ?�이�?*/}
+      {/* 테이블 */}
       <div style={{
         background: '#fff', border: '1px solid #e5e7eb',
         borderRadius: 10, overflow: 'hidden',
         boxShadow: '0 1px 3px rgba(0,0,0,0.05)', marginBottom: 80
       }}>
-        {/* ?�더 */}
+        {/* 헤더 */}
         <div style={{
           display: 'grid', gridTemplateColumns: '1fr 0.5fr 1fr 0.8fr',
           padding: '11px 20px', background: '#f9fafb',
           borderBottom: '1px solid #f3f4f6'
         }}>
-          {['?�플릿명', '공정 ??, '최종 ?�정??, ''].map(h => (
+          {['템플릿명', '공정 수', '최종 수정일', ''].map(h => (
             <span key={h} style={{ fontSize: 12, fontWeight: 600, color: '#6b7280', letterSpacing: '0.04em' }}>{h}</span>
           ))}
         </div>
 
         {loading && (
-          <div style={{ padding: 40, textAlign: 'center', color: '#9ca3af', fontSize: 14 }}>불러?�는 �?..</div>
+          <div style={{ padding: 40, textAlign: 'center', color: '#9ca3af', fontSize: 14 }}>불러오는 중...</div>
         )}
 
         {!loading && list.length === 0 && (
           <div style={{ padding: 60, textAlign: 'center', color: '#9ca3af', fontSize: 14 }}>
-            ?�록???�플릿이 ?�습?�다.
+            등록된 템플릿이 없습니다.
           </div>
         )}
 
@@ -220,12 +220,12 @@ export default function AdditionalProcessPage() {
               padding: '3px 10px', borderRadius: 99,
               fontSize: 12, fontWeight: 600, width: 'fit-content'
             }}>
-              {row.process_count}�?
+              {row.process_count}개
             </span>
             <span style={{ fontSize: 13, color: '#6b7280' }}>{fmtDate(row.last_updated)}</span>
             <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={() => openEdit(row)} style={btnEdit}>?�정</button>
-              <button onClick={() => handleDelete(row.template_name)} style={btnDel}>??��</button>
+              <button onClick={() => openEdit(row)} style={btnEdit}>수정</button>
+              <button onClick={() => handleDelete(row.template_name)} style={btnDel}>삭제</button>
             </div>
           </div>
         ))}
@@ -244,7 +244,7 @@ export default function AdditionalProcessPage() {
         }}
       >+</button>
 
-      {/* ?�?� ?�집 모달 ?�?� */}
+      {/* 생성/편집 모달 */}
       {modal && (
         <div style={{
           position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)',
@@ -258,27 +258,27 @@ export default function AdditionalProcessPage() {
             boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
             display: 'flex', flexDirection: 'column'
           }}>
-            {/* 모달 ?�더 */}
+            {/* 모달 헤더 */}
             <div style={{
               padding: '20px 24px', borderBottom: '1px solid #f3f4f6',
               display: 'flex', alignItems: 'center', justifyContent: 'space-between'
             }}>
               <div style={{ fontSize: 16, fontWeight: 700, color: '#111827' }}>
-                {modal.mode === 'create' ? '?�� ???�플�?만들�? : `?�️ ?�플�??�정`}
+                {modal.mode === 'create' ? '🔧 새 템플릿 만들기' : `✏️ 템플릿 수정`}
               </div>
               <button onClick={() => setModal(null)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: '#9ca3af' }}>??/button>
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: '#9ca3af' }}>✕</button>
             </div>
 
-            {/* ?�플릿명 */}
+            {/* 템플릿명 */}
             <div style={{ padding: '16px 24px', borderBottom: '1px solid #f3f4f6' }}>
               <label style={{ fontSize: 13, fontWeight: 600, color: '#374151', display: 'block', marginBottom: 6 }}>
-                ?�플릿명 <span style={{ color: '#ef4444' }}>*</span>
+                템플릿명 <span style={{ color: '#ef4444' }}>*</span>
               </label>
               <input
                 value={tplName}
                 onChange={e => setTplName(e.target.value)}
-                placeholder="?? ?�크?�치 ?�거, ?�본?? ?�주 가�?.."
+                placeholder="예: 스크래치 제거, 재본딩, 인주 가공..."
                 autoFocus
                 style={{
                   width: '100%', padding: '10px 12px', borderRadius: 8,
@@ -288,22 +288,22 @@ export default function AdditionalProcessPage() {
               />
             </div>
 
-            {/* 본문: 공정 ?�서 ?�집 + 공정 목록 */}
+            {/* 본문: 공정 순서 편집 + 공정 목록 */}
             <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
 
-              {/* ?�쪽: ?�재 공정 ?�서 */}
+              {/* 왼쪽: 현재 공정 순서 */}
               <div style={{ flex: 1, padding: '16px', overflowY: 'auto', borderRight: '1px solid #f3f4f6' }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: '#374151', marginBottom: 12 }}>
-                  공정 ?�서
+                  공정 순서
                   <span style={{
                     marginLeft: 8, fontSize: 11, color: '#6b7280',
                     background: '#f3f4f6', padding: '2px 8px', borderRadius: 99
-                  }}>{steps.length}�?/span>
+                  }}>{steps.length}개</span>
                 </div>
 
                 {steps.length === 0 ? (
                   <div style={{ padding: '40px 0', textAlign: 'center', color: '#9ca3af', fontSize: 13 }}>
-                    ?�른쪽에??공정??추�??�세??
+                    오른쪽에서 공정을 추가하세요.
                   </div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -343,25 +343,25 @@ export default function AdditionalProcessPage() {
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                           <button onClick={() => moveStep(i, -1)} disabled={i === 0}
-                            style={mvBtn(i === 0)}>??/button>
+                            style={mvBtn(i === 0)}>▲</button>
                           <button onClick={() => moveStep(i, 1)} disabled={i === steps.length - 1}
-                            style={mvBtn(i === steps.length - 1)}>??/button>
+                            style={mvBtn(i === steps.length - 1)}>▼</button>
                         </div>
 
                         <button onClick={() => removeStep(i)} style={{
                           background: '#fee2e2', color: '#dc2626',
                           border: 'none', borderRadius: 6,
                           padding: '5px 8px', cursor: 'pointer', fontSize: 12
-                        }}>??/button>
+                        }}>✕</button>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
 
-              {/* ?�른�? 공정 목록 */}
+              {/* 오른쪽: 공정 목록 */}
               <div style={{ width: 240, flexShrink: 0, padding: '16px', overflowY: 'auto', background: '#fafafa' }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#374151', marginBottom: 12 }}>공정 추�?</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#374151', marginBottom: 12 }}>공정 추가</div>
 
                 {Object.entries(grouped).map(([dept, procs]) => (
                   <div key={dept}>
@@ -390,7 +390,7 @@ export default function AdditionalProcessPage() {
                         <span style={{
                           fontSize: 11, fontWeight: 700, color: '#2563eb',
                           background: '#eff6ff', padding: '2px 7px', borderRadius: 99
-                        }}>+ 추�?</span>
+                        }}>+ 추가</span>
                       </div>
                     ))}
                   </div>
@@ -398,7 +398,7 @@ export default function AdditionalProcessPage() {
               </div>
             </div>
 
-            {/* 모달 ?�터 */}
+            {/* 모달 푸터 */}
             <div style={{
               padding: '16px 24px', borderTop: '1px solid #f3f4f6',
               display: 'flex', gap: 10, justifyContent: 'flex-end'
@@ -413,7 +413,7 @@ export default function AdditionalProcessPage() {
                 background: saving ? '#9ca3af' : '#1e3a5f',
                 color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer'
               }}>
-                {saving ? '?�??�?..' : '?�??}
+                {saving ? '저장 중...' : '저장'}
               </button>
             </div>
           </div>
@@ -437,4 +437,3 @@ const mvBtn = (disabled) => ({
   padding: '1px 5px', cursor: disabled ? 'not-allowed' : 'pointer',
   fontSize: 10, color: disabled ? '#d1d5db' : '#374151'
 });
-
