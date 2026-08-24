@@ -61,8 +61,16 @@ export default function Sidebar() {
   const router     = useRouter();
   const [open,     setOpen]     = useState({});
   const [mobile,   setMobile]   = useState(false);
+  const [isNarrow, setIsNarrow] = useState(false);
   const [userName, setUserName] = useState('사용자');
   const [dept,     setDept]     = useState('');
+
+  useEffect(() => {
+    const check = () => setIsNarrow(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   useEffect(() => {
     setUserName(localStorage.getItem('userName') || '사용자');
@@ -98,7 +106,7 @@ export default function Sidebar() {
           max-md:transition-transform max-md:duration-300"
         style={{
           background: '#0f172a',
-          transform: mobile ? 'translateX(0)' : undefined,
+          transform: isNarrow ? (mobile ? 'translateX(0)' : 'translateX(-100%)') : 'translateX(0)',
         }}
       >
         <div className="px-4 pt-5 pb-4 flex-shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
